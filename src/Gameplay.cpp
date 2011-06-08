@@ -190,8 +190,6 @@ void doGameUpdate()
 	DWORD elapsedTime = GetTickCount() - gameLastTick;
 	if( elapsedTime >= (250-gameDifficulty))
 	{
-		//Update screen
-		drawGame();
 		//Process input
 		INPUT_RECORD inputBuffer[64];//We shouldn't need to process more than this at a time.
 		DWORD numRecordsRead;
@@ -328,6 +326,9 @@ void doGameUpdate()
 			}
 		}
 
+		//Update screen
+		drawGame();
+		
 		gameLastTick = GetTickCount();
 	}
 }
