@@ -33,8 +33,8 @@ DWORD gameLastTick;
 bool gameNeedTotalDraw;
 //Score of the game
 unsigned int gameScore;
-//Difficulty; it increases as the score goes up
-unsigned short gameDifficulty;
+//Number of apples we've eaten so far
+unsigned short gameNumApples;
 //Location of the target apple.
 COORD* gameAppleLoc = NULL;
 
@@ -180,18 +180,32 @@ void setupGame()
 	gameLastTick = GetTickCount();
 	gameNeedTotalDraw = true;
 	gameScore = 0;
-	gameDifficulty = 0;
+	gameNumApples = 0;
 	gameMakeNewApple();
 }
 
 void doGameUpdate()
 {
-	//we only want to update the game every quarter second.
-	DWORD elapsedTime = GetTickCount() - gameLastTick;
-	if( elapsedTime >= (250-gameDifficulty))
+	//We don't want to update every time. Wait for a certain amount of time.
+	int diff = 250;//Default to 250
+	switch( getSpeedSetting())
 	{
-		//Update screen
-		drawGame();
+	case SPEED_SLOW:
+		break;//Leave at 250
+	case SPEED_MEDIUM:
+		diff = 150;//Take the speed up a notch
+		break;
+	case SPEED_FAST:
+		diff = 50;//Full speed ahead!
+		break;
+	case SPEED_CURVED:
+		//Formula time!
+		diff = (int)(200*pow(1.25, -gameNumApples) + 50);
+		break;
+	}
+	DWORD elapsedTime = GetTickCount() - gameLastTick;
+	if( elapsedTime >= diff)
+	{
 		//Process input
 		INPUT_RECORD inputBuffer[64];//We shouldn't need to process more than this at a time.
 		DWORD numRecordsRead;
@@ -288,13 +302,25 @@ void doGameUpdate()
 			//We got the apple! Now we need to increase size and make a new apple.
 			gameSnakeLength++; //We don't need to physically add another segment; the normal move logic will do this for us.
 			gameMakeNewApple();
-			//Add 100 to the score.
-			gameScore += 100;
-			gameDifficulty = floor(5*pow((double)1.5,(int)(gameScore/100)));
-			if(gameDifficulty > 200)
+			//Add to the score, depending on the speed
+			switch( getSpeedSetting())
 			{
-				gameDifficulty = 200;
+			case SPEED_SLOW:
+				gameScore += 25;
+				break;
+			case SPEED_MEDIUM:
+				gameScore += 50;
+				break;
+			case SPEED_FAST:
+				gameScore += 100;
+				break;
+			case SPEED_CURVED:
+				//Formula time! The score will curve with the speed.
+				double x = 200*pow(1.25, -gameNumApples) + 50;
+				gameScore += (int)(0.00125 * pow(x,2) - 0.75 * x + 134.375);
+				break;
 			}
+			gameNumApples++;
 		}
 		 //If we didn't hit the apple, we could've hit the walls or ourself.
 		else
@@ -327,6 +353,8 @@ void doGameUpdate()
 				}
 			}
 		}
+		//Update screen
+		drawGame();
 
 		gameLastTick = GetTickCount();
 	}

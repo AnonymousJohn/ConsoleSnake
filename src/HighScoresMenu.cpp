@@ -169,7 +169,7 @@ void drawHS()
 		SetConsoleCursorPosition( getConsoleHandle(), strCoord);
 		WriteFile( getConsoleHandle(), str, strlen(str), &numCharWritten, NULL);
 		strCoord.X -= 2;
-		WORD selectedAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_BLUE;//white text w/ cyan background
+		WORD selectedAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE;//white text w/ cyan background
 		FillConsoleOutputAttribute( getConsoleHandle(), selectedAttr, strlen(str)+4, strCoord, &numCharWritten);
 
 		//Write out the high scores.

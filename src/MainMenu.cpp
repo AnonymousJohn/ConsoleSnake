@@ -20,7 +20,7 @@ void mmScrollUp()
 	mmLastLine = mmSelectedLine;
 	if(mmSelectedLine == 0)
 	{
-		mmSelectedLine = 3;
+		mmSelectedLine = 4;
 	}
 	else
 	{
@@ -30,7 +30,7 @@ void mmScrollUp()
 void mmScrollDown()
 {
 	mmLastLine = mmSelectedLine;
-	if(mmSelectedLine == 3)
+	if(mmSelectedLine == 4)
 	{
 		mmSelectedLine = 0;
 	}
@@ -40,11 +40,13 @@ void mmScrollDown()
 	}
 }
 
+
 //Lines:
 //0 - Play Game
 //1 - Controls
-//2 - High Scores
-//3 - Quit Game
+//2 - Settings
+//3 - High Scores
+//4 - Quit Game
 void mmDoSelect()
 {
 	switch(mmSelectedLine)
@@ -58,10 +60,14 @@ void mmDoSelect()
 		setupMM();
 		break;
 	case 2:
-		setMainState(MODE_HIGH_SCORES_MENU);
+		setMainState(MODE_SETTINGS_MENU);
 		setupMM();
 		break;
 	case 3:
+		setMainState(MODE_HIGH_SCORES_MENU);
+		setupMM();
+		break;
+	case 4:
 		quitGame();
 		break;
 	}
@@ -125,8 +131,9 @@ void doMMUpdate()
 //Lines:
 //0 - Play Game
 //1 - Controls
-//2 - High Scores
-//3 - Quit Game
+//2 - Settings
+//3 - High Scores
+//4 - Quit Game
 void drawMM()
 {
 	//We want to minimize drawing. So, we ask ourselves:
@@ -179,21 +186,36 @@ void drawMM()
 		strCoord = getCenteredStringCoord(str,width,7);
 		SetConsoleCursorPosition( getConsoleHandle(), strCoord);
 		WriteFile( getConsoleHandle(), str, strlen(str), &numCharWritten, NULL);
+		WORD labelAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;//white text w/ black background
+		FillConsoleOutputAttribute( getConsoleHandle(), labelAttr, strlen(str), strCoord, &numCharWritten);
 
 		str = "Controls";
 		strCoord = getCenteredStringCoord(str,width,9);
 		SetConsoleCursorPosition( getConsoleHandle(), strCoord);
 		WriteFile( getConsoleHandle(), str, strlen(str), &numCharWritten, NULL);
+		labelAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;//white text w/ black background
+		FillConsoleOutputAttribute( getConsoleHandle(), labelAttr, strlen(str), strCoord, &numCharWritten);
 
-		str = "High Scores";
+		str = "Settings";
 		strCoord = getCenteredStringCoord(str,width,11);
 		SetConsoleCursorPosition( getConsoleHandle(), strCoord);
 		WriteFile( getConsoleHandle(), str, strlen(str), &numCharWritten, NULL);
+		labelAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;//white text w/ black background
+		FillConsoleOutputAttribute( getConsoleHandle(), labelAttr, strlen(str), strCoord, &numCharWritten);
 
-		str = "Quit";
+		str = "High Scores";
 		strCoord = getCenteredStringCoord(str,width,13);
 		SetConsoleCursorPosition( getConsoleHandle(), strCoord);
 		WriteFile( getConsoleHandle(), str, strlen(str), &numCharWritten, NULL);
+		labelAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;//white text w/ black background
+		FillConsoleOutputAttribute( getConsoleHandle(), labelAttr, strlen(str), strCoord, &numCharWritten);
+
+		str = "Quit";
+		strCoord = getCenteredStringCoord(str,width,15);
+		SetConsoleCursorPosition( getConsoleHandle(), strCoord);
+		WriteFile( getConsoleHandle(), str, strlen(str), &numCharWritten, NULL);
+		labelAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;//white text w/ black background
+		FillConsoleOutputAttribute( getConsoleHandle(), labelAttr, strlen(str), strCoord, &numCharWritten);
 
 		mmNeedTotalDraw = false;
 	}
@@ -210,7 +232,7 @@ void drawMM()
 		COORD strCoord;
 		DWORD numCharWritten;
 		//set up text attributes
-		WORD unselectAttr = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN;//white text w/ black background
+		WORD unselectAttr = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY;//white text w/ black background
 		switch(mmLastLine)
 		{
 		case 0:
@@ -226,20 +248,26 @@ void drawMM()
 			FillConsoleOutputAttribute( getConsoleHandle(), unselectAttr, strlen(str)+4, strCoord, &numCharWritten);
 			break;
 		case 2:
-			str = "High Scores";
+			str = "Settings";
 			strCoord = getCenteredStringCoord(str,width,11);
 			strCoord.X = strCoord.X - 2;
 			FillConsoleOutputAttribute( getConsoleHandle(), unselectAttr, strlen(str)+4, strCoord, &numCharWritten);
 			break;
 		case 3:
-			str = "Quit";
+			str = "High Scores";
 			strCoord = getCenteredStringCoord(str,width,13);
+			strCoord.X = strCoord.X - 2;
+			FillConsoleOutputAttribute( getConsoleHandle(), unselectAttr, strlen(str)+4, strCoord, &numCharWritten);
+			break;
+		case 4:
+			str = "Quit";
+			strCoord = getCenteredStringCoord(str,width,15);
 			strCoord.X = strCoord.X - 2;
 			FillConsoleOutputAttribute( getConsoleHandle(), unselectAttr, strlen(str)+4, strCoord, &numCharWritten);
 			break;
 		}
 		//set up text attributes
-		WORD selectAttr = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_GREEN;//white text w/ black background
+		WORD selectAttr = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY | BACKGROUND_BLUE | BACKGROUND_GREEN;//white text w/ cyan background
 		switch(mmSelectedLine)
 		{
 		case 0:
@@ -255,18 +283,25 @@ void drawMM()
 			FillConsoleOutputAttribute( getConsoleHandle(), selectAttr, strlen(str)+4, strCoord, &numCharWritten);
 			break;
 		case 2:
-			str = "High Scores";
+			str = "Settings";
 			strCoord = getCenteredStringCoord(str,width,11);
 			strCoord.X = strCoord.X - 2;
 			FillConsoleOutputAttribute( getConsoleHandle(), selectAttr, strlen(str)+4, strCoord, &numCharWritten);
 			break;
 		case 3:
-			str = "Quit";
+			str = "High Scores";
 			strCoord = getCenteredStringCoord(str,width,13);
 			strCoord.X = strCoord.X - 2;
 			FillConsoleOutputAttribute( getConsoleHandle(), selectAttr, strlen(str)+4, strCoord, &numCharWritten);
 			break;
+		case 4:
+			str = "Quit";
+			strCoord = getCenteredStringCoord(str,width,15);
+			strCoord.X = strCoord.X - 2;
+			FillConsoleOutputAttribute( getConsoleHandle(), selectAttr, strlen(str)+4, strCoord, &numCharWritten);
+			break;
 		}
+		mmNeedDraw = false;
 	}
 }
 

@@ -167,11 +167,15 @@ void drawPM()
 		strCoord = getCenteredStringCoord(str,width,11);
 		SetConsoleCursorPosition( getConsoleHandle(), strCoord);
 		WriteFile( getConsoleHandle(), str, strlen(str), &numCharWritten, NULL);
+		WORD labelAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;//white text w/ black background
+		FillConsoleOutputAttribute( getConsoleHandle(), labelAttr, strlen(str), strCoord, &numCharWritten);
 
 		str = "Quit Game";
 		strCoord = getCenteredStringCoord(str,width,13);
 		SetConsoleCursorPosition( getConsoleHandle(), strCoord);
 		WriteFile( getConsoleHandle(), str, strlen(str), &numCharWritten, NULL);
+		labelAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;//white text w/ black background
+		FillConsoleOutputAttribute( getConsoleHandle(), labelAttr, strlen(str), strCoord, &numCharWritten);
 
 		pmNeedTotalDraw = false;
 	}
@@ -188,7 +192,7 @@ void drawPM()
 		COORD strCoord;
 		DWORD numCharWritten;
 		//set up text attributes
-		WORD unselectAttr = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN;//white text w/ black background
+		WORD unselectAttr = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY;//white text w/ black background
 		switch(pmLastLine)
 		{
 		case 0:
@@ -205,7 +209,7 @@ void drawPM()
 			break;
 		}
 		//set up text attributes
-		WORD selectAttr = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_GREEN;//white text w/ cyan background
+		WORD selectAttr = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY | BACKGROUND_BLUE | BACKGROUND_GREEN;//white text w/ cyan background
 		switch(pmSelectedLine)
 		{
 		case 0:

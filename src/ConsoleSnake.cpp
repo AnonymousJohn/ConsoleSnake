@@ -23,6 +23,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	setupGame();
 	setupPM();
 	setupGOM();
+	setupSM();
 	//Here we establish the basic state machine that tells us what screen we're looking at.
 	mode = MODE_MAIN_MENU;//Start at the main menu
 	while(!doQuit)
@@ -52,6 +53,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		case MODE_GAME_OVER_MENU:
 			//Update the gameover menu screen and check for input
 			doGOMUpdate();
+			break;
+		case MODE_SETTINGS_MENU:
+			doSMUpdate();
 			break;
 		}
 	}

@@ -13,6 +13,7 @@
 #include "PauseMenu.h"
 #include "GameOverMenu.h"
 #include "HighScoresMenu.h"
+#include "SettingsMenu.h"
 #include "test.h" //only for testing purposes
 
 //Basic Definitions
@@ -23,6 +24,7 @@
 #define MODE_GAME_PLAY        3
 #define MODE_PAUSE_MENU       4
 #define MODE_GAME_OVER_MENU   5
+#define MODE_SETTINGS_MENU    6
 
 //Functions in ConsoleSnake.cpp that need to be accessible to other files
 ///Sets the game loop to quit next time around the main update loop.
