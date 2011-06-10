@@ -1,5 +1,6 @@
 //Implementation of Main Menu functions
 #include "ConsoleSnake.h"
+#include <fstream>
 
 //Do we need to draw the entire screen?
 bool smNeedTotalDraw;
@@ -19,11 +20,36 @@ short speedSetting;
 //Reads the settings file, 'settings.bin'
 void readSettings()
 {
+	//Order:
+	//byte - speed;
+	std::ifstream in;
+	in.open("settings.bin", std::ios::in | std::ios::binary);
+	if(in.bad() || in.fail())
+	{
+		//We couldn't open the file; this may be because it doesn't exist.
+		//Use default values
+		speedSetting = SPEED_CURVED;
+	}
+	else
+	{
+		//The file exists; assume, for simplicity's sake, that it
+		//is properly formatted.
+		char speedTemp;
+		in.read(&speedTemp, sizeof(char));
+		speedSetting = speedTemp;
+	}
 	smHaveReadSettings = true;
 }
 //Saves the settings file, 'settings.bin'
 void saveSettings()
 {
+	//Order:
+	//byte - speed;
+	std::ofstream out;
+	out.open("settings.bin",std::ios::out | std::ios::binary);
+
+	char speedTemp = (char) speedSetting;
+	out.write( &speedTemp, sizeof(char));
 }
 //Does an action when the user hits 'enter'
 void smDoSelect()
@@ -70,6 +96,7 @@ void smDoSetChange(bool left)
 			}
 		}
 		smNeedDraw = true;
+		saveSettings();
 		break;
 	}
 }
