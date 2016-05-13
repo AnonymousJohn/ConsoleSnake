@@ -356,6 +356,9 @@ void doGameUpdate()
 		//Update screen
 		drawGame();
 
+		//Update screen
+		drawGame();
+		
 		gameLastTick = GetTickCount();
 	}
 }
